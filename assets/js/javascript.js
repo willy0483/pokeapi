@@ -1,45 +1,59 @@
 const mainContent = document.createElement("section");
-const pokeDexContent = document.createElement("div");
-pokeDexContent.classList.add("pokeDexContent");
 mainContent.classList.add("pokeDex");
 document.body.appendChild(mainContent);
-mainContent.appendChild(pokeDexContent);
 
 fetchPokemonList();
 
-async function fetchPokemonList() {
+function fetchPokemonList() {
   const url = "https://pokeapi.co/api/v2/pokemon/?offset=0&limit=25";
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
 
-    const data = await response.json();
-    processPokemonList(data);
-  } catch (error) {
-    console.error(error.message);
-  }
+  fetch(url)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(
+          `HTTP error: ${response.status} - ${response.statusText}`
+        );
+      }
+      return response.json();
+    })
+    .then((data) => {
+      data.results.forEach((pokemon) => {
+        fetchPokemonDetails(pokemon.url);
+      });
+    })
+    .catch((error) => console.error("Fetching Pokémon list failed:", error));
 }
 
 function processPokemonList(pokeDex) {
-  pokeDex.results.forEach((pokemon, index) => {
-    fetchPokemonDetails(pokemon.url, index);
+  pokeDex.results.forEach((pokemon) => {
+    fetchPokemonDetails(pokemon.url);
   });
 }
 
-async function fetchPokemonDetails(url, index) {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
+function fetchPokemonDetails(url) {
+  fetch(url)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(
+          `HTTP error: ${response.status} - ${response.statusText}`
+        );
+      }
+      return response.json();
+    })
+    .then((pokemon) => {
+      console.log(pokemon);
 
-    const pokemon = await response.json();
-    sortPokemonDetails(pokemon, index);
-  } catch (error) {
-    console.error(error.message);
-  }
+      sortPokemonDetails(pokemon);
+    })
+    .catch((error) => console.error("Fetching Pokémon details failed:", error));
+}
+
+function sortPokemonDetails(pokemon) {
+  const name = pokemon.name;
+  const image = pokemon.sprites.front_default;
+  const types = pokemon.types.map((type) => type.type.name).join(", ");
+  const id = pokemon.id;
+  displayPokemon(name, image, types, id);
 }
 
 function sortPokemonDetails(pokemon) {
@@ -64,9 +78,8 @@ function displayPokemon(name, image, types, id) {
 }
 
 function showMainContent(html) {
-  pokeDexContent.innerHTML += html;
+  mainContent.innerHTML += html;
 }
-
 // Create and configure the button
 const myButton = document.createElement("button");
 myButton.textContent = "Fetch New Pokémon";
@@ -84,10 +97,10 @@ document.body.appendChild(myButton2);
 myButton2.addEventListener("click", () => {
   mainContent.innerHTML = "";
   let myHtml = "";
-  myHtml += `<h1>dwadadwd</h1>`;
+  myHtml += `<h1>Pokédex Reset</h1>`; // Reset message
   showMainContent(myHtml);
 });
 
 async function callBackPokemonCard(cardId) {
-  console.log(cardId);
+  console.log(`Clicked Pokémon ID: ${cardId}`);
 }

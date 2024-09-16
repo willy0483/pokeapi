@@ -1,12 +1,12 @@
 .pokeDex {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   width: 100%;
   margin: auto;
 }
 .pokeDex .pokeDexContent {
   display: flex;
-  flex-wrap: wrap;
   justify-content: flex-start;
   margin: auto;
 }
