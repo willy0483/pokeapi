@@ -1,11 +1,14 @@
 const mainContent = document.createElement("section");
+const pokeDexContent = document.createElement("div");
+pokeDexContent.classList.add("pokeDexContent");
 mainContent.classList.add("pokeDex");
 document.body.appendChild(mainContent);
+mainContent.appendChild(pokeDexContent);
 
 fetchPokemonList();
 
 async function fetchPokemonList() {
-  const url = "https://pokeapi.co/api/v2/pokemon/?offset=0&limit=24";
+  const url = "https://pokeapi.co/api/v2/pokemon/?offset=0&limit=25";
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -39,16 +42,17 @@ async function fetchPokemonDetails(url, index) {
   }
 }
 
-function sortPokemonDetails(pokemon, index) {
+function sortPokemonDetails(pokemon) {
   const name = pokemon.name;
   const image = pokemon.sprites.front_default;
   const types = pokemon.types.map((type) => type.type.name).join(", ");
-  displayPokemon(name, image, types, index);
+  const id = pokemon.id;
+  displayPokemon(name, image, types, id);
 }
 
-function displayPokemon(name, image, types, index) {
+function displayPokemon(name, image, types, id) {
   const pokemonCard = `
-    <figure onclick="pokemonCardItem('${name}')" class="pokemon ${name}">
+    <figure onclick="callBackPokemonCard('${id}')" class="pokemon ${name}">
       <img class="card-image" src="${image}" alt="${name}" />
       <figcaption>
         <h2 class="card-title">${name}</h2>
@@ -60,7 +64,7 @@ function displayPokemon(name, image, types, index) {
 }
 
 function showMainContent(html) {
-  mainContent.innerHTML += html;
+  pokeDexContent.innerHTML += html;
 }
 
 // Create and configure the button
@@ -70,7 +74,7 @@ document.body.appendChild(myButton);
 
 myButton.addEventListener("click", () => {
   mainContent.innerHTML = "";
-  fetchPokemonList(); // Fetch new Pokémon when the button is clicked
+  fetchPokemonList();
 });
 
 const myButton2 = document.createElement("button");
@@ -84,6 +88,6 @@ myButton2.addEventListener("click", () => {
   showMainContent(myHtml);
 });
 
-async function pokemonCardItem(name) {
-  console.log(name);
+async function callBackPokemonCard(cardId) {
+  console.log(cardId);
 }

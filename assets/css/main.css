@@ -1,9 +1,14 @@
 .pokeDex {
-  width: 1400px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
   margin: auto;
+}
+.pokeDex .pokeDexContent {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+  margin: auto;
 }
 
 .pokemon {
